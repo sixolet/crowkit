@@ -110,23 +110,16 @@ local make_crow_output = function(i)
 end
 
 local pre_init = function()
-    print("pre-init")
-    local init1 = init
     for i=1,4,1 do
         table.insert(toolkit.registered_binaries, n(i, "pulse"))
         table.insert(toolkit.registered_binaries, n(i, "gate"))
         table.insert(toolkit.registered_numbers, n(i, "voltage"))
         table.insert(toolkit.registered_numbers, n(i, "note"))
     end
-    init = function()
-        init1()
+    toolkit.post_init["crowkit"] = function()
         for i=1,4,1 do
             make_crow_output(i)
         end
-        -- after adding our params, we want to re-load default/existing values
-        -- but, we don't want to re-bang script params, 
-        -- or bang our params which have conflicting side-effects
-        params:read(nil, true)
     end
 end
 
