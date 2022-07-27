@@ -103,7 +103,7 @@ local make_crow_output = function(i)
     toolkit.defer_bang(n(i, "note"))
     params:add_option(n(i, "scale"), "scale", scale_names, 1)
     params:set_action(n(i, "scale"), function ()
-        local s = scale_names[params:get("scale")]
+        local s = scale_names[params:get(n(i, "scale"))]
         scale = music.generate_scale(12, s, 8)
     end)
     toolkit.defer_bang(n(i, "scale"), 2)
