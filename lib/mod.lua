@@ -1,6 +1,6 @@
 local mod = require 'core/mods'
-local toolkit = require('toolkit/lib/mod')
 local music = require("musicutil")
+local matrix = require('matrix/lib/matrix')
 
 
 local scale_names = {}
@@ -15,7 +15,7 @@ local n = function(i, name)
 end
 
 local make_crow_output = function(i)
-    params:add_group("crow out"..i, 9)
+    params:add_group("crow out "..i, 9)
     local scale = {}
     params:add_option(n(i, "mode"), "mode", MODES, 1)
     local routine
@@ -52,7 +52,7 @@ local make_crow_output = function(i)
         end
         _menu.rebuild_params()
     end)
-    toolkit.defer_bang(n(i, "mode"))
+    matrix:defer_bang(n(i, "mode"))
     params:add_trigger(n(i, "pulse"), "pulse")
     params:add_control(n(i, "pulse_len"), "pulse length", controlspec.new(0.005, 10, "exp", 0, 0.01))
     local on = false
@@ -100,27 +100,21 @@ local make_crow_output = function(i)
         local ratio = hz/params:get(n(i, "tuning"))
         crow.output[i].volts = math.log(ratio)/math.log(2)
     end)
-    toolkit.defer_bang(n(i, "note"))
+    matrix:defer_bang(n(i, "note"))
     params:add_option(n(i, "scale"), "scale", scale_names, 1)
     params:set_action(n(i, "scale"), function ()
         local s = scale_names[params:get(n(i, "scale"))]
         scale = music.generate_scale(12, s, 8)
     end)
-    toolkit.defer_bang(n(i, "scale"), 2)
+    matrix:defer_bang(n(i, "scale"), 2)
 end
 
 local pre_init = function()
-    for i=1,4,1 do
-        table.insert(toolkit.registered_binaries, n(i, "pulse"))
-        table.insert(toolkit.registered_binaries, n(i, "gate"))
-        table.insert(toolkit.registered_numbers, n(i, "voltage"))
-        table.insert(toolkit.registered_numbers, n(i, "note"))
-    end
-    toolkit.post_init["crowkit"] = function()
+    matrix:add_post_init_hook(function()
         for i=1,4,1 do
             make_crow_output(i)
         end
-    end
+    end)
 end
 
 mod.hook.register("script_pre_init", "crowkit pre init", pre_init)
