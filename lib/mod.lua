@@ -15,6 +15,7 @@ local n = function(i, name)
 end
 
 local make_crow_output = function(i)
+    params:add_separator("crowkit")
     params:add_group("crow out "..i, 9)
     local scale = {}
     params:add_option(n(i, "mode"), "mode", MODES, 1)
