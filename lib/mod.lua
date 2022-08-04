@@ -15,7 +15,6 @@ local n = function(i, name)
 end
 
 local make_crow_output = function(i)
-    params:add_separator("crowkit")
     params:add_group("crow out "..i, 9)
     local scale = {}
     params:add_option(n(i, "mode"), "mode", MODES, 1)
@@ -112,6 +111,7 @@ end
 
 local pre_init = function()
     matrix:add_post_init_hook(function()
+        params:add_separator("crowkit")
         for i=1,4,1 do
             make_crow_output(i)
         end
